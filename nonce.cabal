@@ -32,7 +32,7 @@ library
     , base64-bytestring == 1.0.*
     , bytestring        >= 0.9
     , crypto-random     == 0.0.*
-    , cprng-aes         == 0.5.*
+    , cprng-aes         >= 0.5   && < 0.7
     , text              >= 0.9
     , transformers      >= 0.2
   hs-source-dirs: src/
