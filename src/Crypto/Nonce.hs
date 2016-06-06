@@ -32,11 +32,10 @@ module Crypto.Nonce
 
 import Control.Monad (liftM)
 import Control.Monad.IO.Class (MonadIO, liftIO)
+import Crypto.Random
 import Data.Tuple (swap)
 import Data.Typeable (Typeable)
 
-import qualified Crypto.Random as R
-import qualified Crypto.Random.AESCtr as AESCtr
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Base64.URL as B64URL
 import qualified Data.IORef as I
@@ -46,7 +45,7 @@ import qualified Data.Text.Encoding as TE
 
 -- | An encapsulated nonce generator.
 data Generator =
-  G (I.IORef AESCtr.AESRNG)
+  G (I.IORef SystemDRG)
   deriving (Typeable)
 
 instance Show Generator where
@@ -55,12 +54,12 @@ instance Show Generator where
 
 -- | Create a new nonce generator using the system entropy.
 new :: MonadIO m => m Generator
-new = liftM G . liftIO $ AESCtr.makeSystem >>= I.newIORef
+new = liftM G . liftIO $ getSystemDRG >>= I.newIORef
 
 
--- | (Internal) Generate the given number of bytes from the AES CPRNG.
+-- | (Internal) Generate the given number of bytes from the DRG.
 genBytes :: MonadIO m => Int -> Generator -> m B.ByteString
-genBytes n (G v) = liftIO $ I.atomicModifyIORef v $ swap . R.cprgGenerate n
+genBytes n (G v) = liftIO $ I.atomicModifyIORef v $ swap . randomBytesGenerate n
 
 
 -- | Generate a 128 bit nonce as a 'B.ByteString' of 16 bytes.
