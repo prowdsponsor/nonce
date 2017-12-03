@@ -25,6 +25,8 @@
 module Crypto.Nonce
   ( Generator
   , new
+  , delete
+  , withGenerator
   , nonce128
   , nonce128url
   , nonce128urlT
@@ -34,6 +36,8 @@ import Control.Monad (liftM)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import qualified System.Entropy as Entropy
 import Data.Typeable (Typeable)
+import Control.Monad.IO.Unlift (MonadUnliftIO)
+import UnliftIO.Exception (bracket)
 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Base64.URL as B64URL
@@ -42,7 +46,7 @@ import qualified Data.Text.Encoding as TE
 
 
 -- | An encapsulated nonce generator.
-data Generator = G Entropy.CryptHandle
+newtype Generator = G Entropy.CryptHandle
   deriving (Typeable)
 
 instance Show Generator where
@@ -52,6 +56,22 @@ instance Show Generator where
 -- | Create a new nonce generator using the system entropy.
 new :: MonadIO m => m Generator
 new = liftM G . liftIO $ Entropy.openHandle
+
+
+-- | Release the given generator's resources. The generator won't be
+-- usable afterwards.
+delete :: MonadIO m => Generator -> m ()
+delete (G v) = liftIO $ Entropy.closeHandle v
+
+
+-- | An exception-safe convenience function.
+--
+-- @
+-- withGenerator = bracket new delete
+-- @
+--
+withGenerator :: MonadUnliftIO m => (Generator -> m a) -> m a
+withGenerator = bracket new delete
 
 
 -- | (Internal) Generate the given number of bytes from the DRG.
