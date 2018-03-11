@@ -33,7 +33,7 @@ library
     , bytestring        >= 0.9
     , text              >= 0.9
     , transformers      >= 0.2
-    , entropy           >= 0.3.7 && < 0.4
+    , entropy           >= 0.3.7 && < 0.4.2
     , unliftio
     , unliftio-core
   hs-source-dirs: src/
