@@ -35,7 +35,6 @@ module Crypto.Nonce
 import Control.Monad (liftM)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import qualified System.Entropy as Entropy
-import Data.Typeable (Typeable)
 import Control.Monad.IO.Unlift (MonadUnliftIO)
 import UnliftIO.Exception (bracket)
 
@@ -47,7 +46,6 @@ import qualified Data.Text.Encoding as TE
 
 -- | An encapsulated nonce generator.
 newtype Generator = G Entropy.CryptHandle
-  deriving (Typeable)
 
 instance Show Generator where
   show _ = "<NonceGenerator>"
