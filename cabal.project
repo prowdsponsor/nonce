@@ -2,23 +2,3 @@ packages: .
 
 tests: True
 test-show-details: direct
-
-if impl (ghc >= 9.14)
-  allow-newer:
-    , async:base
-    , Cabal:Cabal-syntax
-    , Cabal:containers
-    , Cabal:time
-    , Cabal-syntax:containers
-    , entropy:binary
-    , entropy:Cabal
-    , entropy:Cabal-syntax
-    , entropy:containers
-    , entropy:filepath
-    , entropy:text
-    , entropy:time
-    , entropy:unix
-    , hashable:base
-    , hashable:ghc-bignum
-    , stm:base
-    , unix:time
